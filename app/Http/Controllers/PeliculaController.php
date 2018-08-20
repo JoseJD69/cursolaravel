@@ -29,7 +29,8 @@ class PeliculaController extends Controller
     public function create()
     {
         $generos = Genero::orderBy('nombre')->get(['idGenero', 'nombre']);
-        return view("panel.peliculas.create", compact('generos'));
+        $actores = Actor::orderBy('nombres')->get(['idActor', 'nombres','apellidos']);
+        return view("panel.peliculas.create", compact('generos','actores'));
     }
 
     /**
@@ -41,8 +42,14 @@ class PeliculaController extends Controller
     public function store(PeliculaRequest $request)
     {
         try {
-            $pelicula = Pelicula::create($request->except('idGenero'));
+            $pelicula = Pelicula::create($request->except('idGenero','imagen','idActor'));
+            if ($request->hasFile('imagen') && $request->imagen!=null) {
+                $pelicula->imagen = $request->file('imagen')->store('public/peliculas');
+                $pelicula->save();
+            }
+
             $pelicula->generos()->sync($request->idGenero);
+            $pelicula->actores()->sync($request->idActor);
             return redirect('peliculas')->with('success', 'Película registrada');
         } catch (Exception $e) {
             return back()->withErrors(['exception' => $e->getMessage()])->withInput();

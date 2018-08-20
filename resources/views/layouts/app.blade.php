@@ -47,6 +47,10 @@
                             <a class="nav-link {{strpos(Request::path(), 'generos') !== false ?'active':''}}"
                              href="{{ url('generos') }}">Géneros</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{strpos(Request::path(), 'actores') !== false ?'active':''}}"
+                             href="{{ url('actores') }}">Actores</a>
+                        </li>
                         @endauth
                     </ul>
 

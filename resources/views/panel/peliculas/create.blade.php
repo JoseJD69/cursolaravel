@@ -9,7 +9,7 @@
                     </a></div>
                     <div class="card-body">
                         @include('includes.messages')
-                        {!! Form::open(['url' => 'peliculas']) !!}
+                        {!! Form::open(['url' => 'peliculas','files'=>'true']) !!}
                             <div class="form-group row">
                                 <label for="titulo" class="col-sm-2 col-form-label">Título</label>
                                 <div class="col-sm-10">
@@ -26,6 +26,13 @@
                                     <input required type="number" min="1950" max="{{date('Y')}}" class="form-control" id="anio" name="anio" value="{{old('anio')}}">
                                 </div>
                             </div>
+                            <div class="form-group row">
+                                <label for="imagen" class="col-sm-2 col-form-label">Imagen</label>
+                                <div class="col-sm-10">
+                                    <input type="file" class="form-control" id="imagen" name="imagen">
+                                </div>
+                            </div>
+
                             <div class="form-group">
                                     <label for="generos">Géneros</label>
                                     <div style="height:300px;overflow-y: scroll;">
@@ -34,6 +41,19 @@
                                                 <input class="form-check-input" type="checkbox" value="{{$gen->idGenero}}" name="idGenero[]">
                                                 <label class="form-check-label">
                                                       {{$gen->nombre}}
+                                                  </label>
+                                                </div>
+                                        @endforeach
+                                    </div>
+                            </div>
+                            <div class="form-group">
+                                    <label for="actores">Actores</label>
+                                    <div style="height:300px;overflow-y: scroll;">
+                                        @foreach ($actores as $act)
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value="{{$act->idActor}}" name="idActor[]">
+                                                <label class="form-check-label">
+                                                      {{$act->nombres}} {{$act->apellidos}}
                                                   </label>
                                                 </div>
                                         @endforeach

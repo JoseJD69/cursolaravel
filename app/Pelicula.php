@@ -4,16 +4,16 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use DB;
+use Storage;
 
 class Pelicula extends Model
 {
     protected $primaryKey = "idPelicula";
     protected $table = "peliculas";
     public $timestamps = true;
-    
+    public $fillable=['titulo','duracion','anio','imagen'];
     //CONST CREATED_AT="fecha_registro";
-    public $guarded = [];
-
+    
     protected $hidden = ['pivot'];
 
     public function generos()
@@ -68,6 +68,9 @@ class Pelicula extends Model
         static::deleting(function ($pelicula) { // before delete() method call this
             $pelicula->generos()->detach();
             $pelicula->actores()->detach();
+            if($pelicula->imagen != null){
+                Storage::delete($pelicula->imagen);
+            }
         });
     }
 

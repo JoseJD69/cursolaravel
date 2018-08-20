@@ -12,6 +12,14 @@
                             <li class="list-group-item"><b>Título:</b> {{$pelicula->titulo}}</li>
                             <li class="list-group-item"><b>Duración:</b> {{$pelicula->duracion}} minutos</li>
                             <li class="list-group-item"><b>Año:</b> {{$pelicula->anio}}</li>
+                            <li class="list-group-item"><b>Imagen:</b> 
+                                @if($pelicula->imagen == null)
+                                    -
+                                @else
+                                    <img src="{{\Storage::url($pelicula->imagen)}}" style="max-height:300px;">
+                                @endif
+                            </li>
+
                         </ul>
                         <h4>Géneros</h4>
                         @if (count($pelicula->generos) > 0)

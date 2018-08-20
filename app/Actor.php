@@ -8,6 +8,7 @@ class Actor extends Model
 {
     protected $primaryKey = "idActor";
     protected $table = "actores";
+    public $fillable=['nombres','apellidos','pais'];
     public $timestamps = true;
 
     public function peliculas()
