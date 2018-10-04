@@ -3,34 +3,35 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
+use App\Pelicula;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use App\Genero;
 
-class GeneroNotification extends Notification implements ShouldQueue
+class PeliculaNotification extends Notification implements ShouldQueue
 {
     use Queueable;
-public $nombre,$fecha,$asunto,$texto;
+    public $titulo,$fecha,$asunto,$texto;
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(Genero $genero,$fechaAct= false)
+    public function __construct(Pelicula $pelicula,$fechaAct= false)
     {
-        $this->nombre = $genero->nombre;
+        $this->titulo = $pelicula->titulo;
         if ($fechaAct == false) {
-            $this->asunto = 'Género enviado a papelera';
-            $this->texto = "envió a papelera";
-            $this->fecha = $genero->deleted_at;
+            $this->asunto = 'Pelicula Creada';
+            $this->texto = "creó";
+            $this->fecha = $pelicula->created_at;
         } else {
-            $this->asunto = 'Género restaurado';
-            $this->texto = "restauró";
-            $this->fecha = $genero->updated_at;
+            $this->asunto = 'Pelicula Actualizada';
+            $this->texto = "actualizo";
+            $this->fecha = $pelicula->updated_at;
         }      
 
     }
+
 
     /**
      * Get the notification's delivery channels.
@@ -52,10 +53,8 @@ public $nombre,$fecha,$asunto,$texto;
     public function toMail($notifiable)
     {
         return (new MailMessage)->greeting('Saludos!')
-            ->subject($this->asunto)
-            ->line("Se " . $this->texto . " el género " . $this->nombre . "a las " . $this->fecha);
-
-
+        ->subject($this->asunto)
+        ->line("Se " . $this->texto . " la pelicula " . $this->titulo . " a las " . $this->fecha);
     }
 
     /**

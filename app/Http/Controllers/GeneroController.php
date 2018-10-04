@@ -9,6 +9,7 @@ use App\Http\Requests\GeneroRequest;
 use App\Notifications\GeneroNotification;
 use Notification;
 use Auth;
+use App\Jobs\ProcessEmail;
 
 class GeneroController extends Controller
 {
@@ -67,8 +68,9 @@ class GeneroController extends Controller
      */
     public function show($id)
     {
-       $generos=Genero::findOrFail($id);
-        return view("panel.generos.show", compact('generos'));
+        return $generos=Genero::withTrashed()->where('idGenero',$id)->firstOrFail()->toJson();
+        //return view("panel.generos.show", compact('generos'));
+        
     }
 
     /**
@@ -119,8 +121,7 @@ class GeneroController extends Controller
         } */
         try{
             Genero::destroy($id);
-            $user=Auth::user();
-            $user->notify(new GeneroNotification());
+            $gen = Genero::withTrashed()->where('idGenero', $id)->first();
             // Notification::route('mail', $email)
             // ->notify(new GeneroNotification());
             return redirect('generos')->with('success','Género enviado a papelera');

@@ -150,6 +150,7 @@ return [
         /*
          * Package Service Providers...
          */
+        Berkayk\OneSignal\OneSignalServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -174,7 +175,7 @@ return [
      */
 
     'aliases' => [
-
+        'Input' => Illuminate\Support\Facades\Input::class,
         'App' => Illuminate\Support\Facades\App::class,
         'Artisan' => Illuminate\Support\Facades\Artisan::class,
         'Auth' => Illuminate\Support\Facades\Auth::class,
@@ -210,7 +211,8 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
-
+        'OneSignal' => Berkayk\OneSignal\OneSignalFacade::class,
+        'Socialite' => Laravel\Socialite\Facades\Socialite::class,
     ],
 
 ];

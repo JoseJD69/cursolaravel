@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Actor;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
-use App\Actor;
+use App\Http\Requests\ActorRequest;
+use App\Notifications\GeneroNotification;
+use Notification;
+use Auth;
+
 
 class ActorController extends Controller
 {
@@ -29,14 +34,14 @@ class ActorController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\GeneroRequest  $request
+     * @param  \Illuminate\Http\ActorRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(GeneroRequest $request)
+    public function store(ActorRequest $request)
     {
         try {
-            $genero = Genero::create($request->except('idPelicula'));
-            $genero->save();
+            $actor = Actor::create($request->except('idPelicula'));
+            $actor->save();
             return redirect('generos')->with('success', 'Genero registrado');
         } catch (Exception $e) {
             return back()->withErrors(['exception' => $e->getMessage()])->withInput();
@@ -50,7 +55,7 @@ class ActorController extends Controller
      */
     public function create()
     {
-        return view("panel.generos.create");
+        return view("panel.actores.create");
     }
     /**
      * Display the specified resource.
@@ -60,7 +65,8 @@ class ActorController extends Controller
      */
     public function show($id)
     {
-        //
+        $actores=Actor::findOrFail($id);
+        return view("panel.actores.show", compact('actores'));
     }
 
     /**
@@ -84,8 +90,8 @@ class ActorController extends Controller
     public function destroy($id)
     {
         try {
-            Genero::withTrashed()->where('idGenero', $id)->forceDelete();
-            return redirect('generos')->with('success', 'Género eliminado permanentemente');
+            Actor::withTrashed()->where('adActor', $id)->forceDelete();
+            return redirect('actores')->with('success', 'Actor eliminado permanentemente');
         } catch (Exception | QueryException $e) {
             return back()->withErrors(['exception' => $e->getMessage()]);
         }
@@ -94,8 +100,8 @@ class ActorController extends Controller
     public function restore($id)
     {
         try {
-            Genero::withTrashed()->where('idGenero', $id)->restore();
-            return redirect('generos')->with('success', 'Género restaurado');
+            Actor::withTrashed()->where('idActor', $id)->restore();
+            return redirect('generos')->with('success', 'Actor restaurado');
         } catch (Exception $e) {
             return back()->withErrors(['exception' => $e->getMessage()]);
         }
@@ -104,8 +110,8 @@ class ActorController extends Controller
     public function trash($id)
     {
         try {
-            Genero::destroy($id);
-            return redirect('generos')->with('success', 'Género enviado a papelera');
+            Actor::destroy($id);
+            return redirect('actores')->with('success', 'Actor enviado a papelera');
         } catch (Exception $e) {
             return back()->withErrors(['exception' => $e->getMessage()]);
         }

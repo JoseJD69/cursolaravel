@@ -3,7 +3,11 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Notifications\PeliculaNotification;
+use Notification;
+use Input;
 use DB;
+use Auth;
 use Storage;
 
 class Pelicula extends Model
@@ -11,9 +15,9 @@ class Pelicula extends Model
     protected $primaryKey = "idPelicula";
     protected $table = "peliculas";
     public $timestamps = true;
-    public $fillable=['titulo','duracion','anio','imagen'];
+    public $fillable = ['titulo', 'duracion', 'anio', 'imagen'];
     //CONST CREATED_AT="fecha_registro";
-    
+
     protected $hidden = ['pivot'];
 
     public function generos()
@@ -68,9 +72,26 @@ class Pelicula extends Model
         static::deleting(function ($pelicula) { // before delete() method call this
             $pelicula->generos()->detach();
             $pelicula->actores()->detach();
-            if($pelicula->imagen != null){
+
+            if ($pelicula->imagen != null) {
                 Storage::delete($pelicula->imagen);
             }
+        });
+        static::creating(function ($pelicula) { // before delet
+            if (Input::hasFile('imagen') && $pelicula->imagen != null) {
+                $image = Input::file('imagen');
+                $pelicula->imagen = $image->store('public/peliculas');
+            }
+        });
+        static::created(function ($pelicula) { // before delete() method call this
+            $user = Auth::user();
+            $user->notify(new PeliculaNotification($pelicula));
+
+        });
+        static::updated(function ($pelicula) { // before delete() method call this
+            $user = Auth::user();
+            $user->notify(new PeliculaNotification($pelicula,true));
+
         });
     }
 
